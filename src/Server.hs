@@ -9,6 +9,7 @@ import           Data.DateTime (getCurrentTime, formatDateTime, DateTime)
 import           Network.Wai (Application)
 import qualified Web.Scotty as S
 import qualified Data.Text.Lazy as T
+import           System.Environment (lookupEnv)
 
 data BotResponse = BotResponse {
                                   text :: T.Text,
@@ -53,4 +54,8 @@ app :: IO Application
 app = S.scottyApp app'
 
 runApp :: IO ()
-runApp = S.scotty 8080 app'
+runApp = do
+  port <- lookupEnv "PORT"
+  case port of
+    Just (value) -> flip S.scotty app' $ read value
+    Nothing   -> S.scotty 8080 app'
