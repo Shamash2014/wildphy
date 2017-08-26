@@ -43,10 +43,10 @@ startTimer pipe = do
   token <- S.param "token"
   name <- S.param "user_name"
   time <- liftIO (getCurrentTime)
-  result <- liftIO $ (run "wildphy"  pipe) $ insert "timers" [ "author" =: (T.unpack name)
+  res <- liftIO $ (run "wildphy"  pipe) $ insert "timers" [ "author" =: (T.unpack name)
                                                              , "ts" =: time
                                                              , "project" =: (T.unpack request)  ]
-  liftIO $ print result
+  liftIO $ print =<< ((run "wildphy"  pipe) allCollections) 
   if verifyToken token then
         S.json $ makeBotResponse $ "Hi, " <> name
                                     <> "! Time tracking started for *"
